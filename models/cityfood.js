@@ -8,4 +8,4 @@ const CityFoodSchema = new Schema({
     location: String
 });
 
-module.exports = mongoose.model('CityFood', CityFoodSchema);
+module.exports = mongoose.model('cityfood', CityFoodSchema); //model and schema
