@@ -2,11 +2,16 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost27017/cityfood-map', {   //local db called cityfood-map
+require('dotenv').config(); //to read .env file for mongodb connection
+
+const uri = process.env.ATLAS_URI; //connect mongodb with atlas 
+
+mongoose.connect(uri, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
 });
+///*'mongodb://localhost27017/cityfood-map' could be instead of uri for local db called cityfood-map
 
 const db = mongoose.connection;
 //check for successful connection
@@ -16,7 +21,6 @@ db.once("open", () => {
 });
 
 const app = express();
-
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
