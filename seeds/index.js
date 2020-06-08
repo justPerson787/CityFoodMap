@@ -1,7 +1,6 @@
-const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
-const Foodplace = require('./models/foodplace');
+const { places } = require('./seedHelper');
+const Foodplace = require('../models/foodplace');
 
 require('dotenv').config(); //to read .env file for mongodb connection
 
@@ -21,21 +20,16 @@ db.once("open", () => {
     console.log("CityFood Database connected");
 });
 
-const app = express();
+const seedDB = async() => {
+    await Foodplace.deleteMany({});
+    for (let i = 0; i< 12; i++) {
+        const place = new Foodplace({
+            title: `${places[i]}`
+        })
+        await place.save();
+    }
+}
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.get('/', (req, res) => {
-    res.render('home')
-})
-
-app.get('/addplace', async (req, res) => {
-    const place = new Foodplace({ title: 'Place 1', description: 'Pancakes' });
-    await place.save();
-    res.send(place)
-})
-
-app.listen(3000, ()=> {
-    console.log('serving on port 3000')
-})
+seedDB().then(() => {
+    mongoose.connection.close();
+});
