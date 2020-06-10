@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants</title>
+</head>
+<body>
+    <h1>All Restaurants</h1>
+    <ul>
+        <% for (let restaurant of restaurants){%>
+        <li><%= restaurant.title %></li>
+    <% }%>
+    </ul>
+</body>
+</html>

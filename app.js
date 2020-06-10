@@ -30,10 +30,9 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.get('/addplace', async (req, res) => {
-    const place = new Foodplace({ title: 'Place 1', description: 'Pancakes' });
-    await place.save();
-    res.send(place)
+app.get('/restaurants', async (req, res) => {
+    const restaurants = await Foodplace.find({ });
+    res.render('restaurants/index', { restaurants })
 })
 
 app.listen(3000, ()=> {
