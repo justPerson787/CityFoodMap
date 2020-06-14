@@ -26,6 +26,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(express.urlencoded({ extended: true })) //to extract POST request body
+
 app.get('/', (req, res) => {
     res.render('home')
 })
@@ -33,6 +35,23 @@ app.get('/', (req, res) => {
 app.get('/restaurants', async (req, res) => {
     const restaurants = await Foodplace.find({ });
     res.render('restaurants/index', { restaurants })
+})
+
+app.get('/restaurants/add', (req, res) => {
+    res.render('restaurants/add');
+})
+
+app.post('/restaurants', async (req, res) => {    
+    const restaurant = new Foodplace(req.body.restaurant);
+    await restaurant.save();
+    console.log(restaurant);
+    res.redirect(`/restaurants/${restaurant._id}`)
+    //res.send('POST restaurants response!');
+});
+
+app.get('/restaurants/:id', async (req, res) => {
+    const restaurant = await Foodplace.findById(req.params.id);    
+    res.render('restaurants/show', { restaurant });
 })
 
 app.listen(3000, ()=> {
