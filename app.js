@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const Foodplace = require('./models/foodplace');
 
 require('dotenv').config(); //to read .env file for mongodb connection
@@ -27,6 +28,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true })) //to extract POST request body
+app.use(methodOverride('_method')); //method override for editing in form
 
 app.get('/', (req, res) => {
     res.render('home')
@@ -52,6 +54,17 @@ app.post('/restaurants', async (req, res) => {
 app.get('/restaurants/:id', async (req, res) => {
     const restaurant = await Foodplace.findById(req.params.id);    
     res.render('restaurants/show', { restaurant });
+})
+
+app.get('/restaurants/:id/edit', async (req, res) => {
+    const restaurant = await Foodplace.findById(req.params.id);    
+    res.render('restaurants/edit', { restaurant });
+})
+
+app.put('/restaurants/:id', async (req, res) => {
+    const { id } = req.params;
+    const restaurant = await Foodplace.findByIdAndUpdate(id, { ...req.body.restaurant });
+    res.redirect(`/restaurants/${restaurant._id}`);
 })
 
 app.listen(3000, ()=> {
