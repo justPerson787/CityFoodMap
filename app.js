@@ -67,6 +67,12 @@ app.put('/restaurants/:id', async (req, res) => {
     res.redirect(`/restaurants/${restaurant._id}`);
 })
 
+app.delete('/restaurants/:id', async (req, res) => {
+    const { id } = req.params;
+    await Foodplace.findByIdAndDelete(id);
+    res.redirect('/restaurants');
+})
+
 app.listen(3000, ()=> {
     console.log('serving on port 3000')
 })

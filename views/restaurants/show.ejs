@@ -8,6 +8,9 @@
 <body>
     <h1><%= restaurant.title %></h1>
     <p><a href="/restaurants/<%=restaurant._id%>/edit">Edit</a></p>
+    <form action="/restaurants/<%=restaurant._id%>?_method=DELETE" method="post">
+        <button>Delete</button>
+    </form>
     <footer>
         <a href="/restaurants">All Restaurants</a>
     </footer>
