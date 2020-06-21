@@ -1,19 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Restaurant</title>
-</head>
-<body>
-    <h1>Edit Restaurant</h1>
-    <form action="/restaurants/<%=restaurant._id%>?_method=PUT" method="post"> 
-        <div>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="restaurant[title]" value="<%=restaurant.title%>">
-        </div>
-        <button>Update Restaurant</button>
-    </form>
-    <a href="/restaurants/<%= restaurant._id%>">Back to Restaurant</a>
-</body>
-</html>
+<% layout('layouts/boilerplate') %> 
+
+<div class="row">
+    <h1 class="text-center">Edit Restaurant</h1>
+    <div class="col-6 offset-3">        
+        <form action="/restaurants/<%=restaurant._id%>?_method=PUT" method="post"> 
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="restaurant[title]" value="<%=restaurant.title %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="image">Image Url</label>
+                <input class="form-control" type="text" id="image" name="restaurant[image]" value="<%=restaurant.image %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Average Price</label>
+                <div class="input-group">                    
+                    <span class="input-group-text" id="price-label">$</label>
+                    <input class="form-control" type="text" id="price" placeholder="0.00" aria-label="price" aria-describedby="price-label" name="restaurant[price]" value="<%=restaurant.price %>">
+                </div>
+            </div> 
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" type="text" id="description" name="restaurant[description]"><%= restaurant.description %></textarea>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-info">Update Restaurant</button>
+            </div>      
+        </form>
+        <a href="/restaurants/<%= restaurant._id%>">Back to Restaurant</a>
+    </div>
+</div>

@@ -1,19 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurants</title>
-</head>
-<body>
-    <h1>All Restaurants</h1>
-    <div>
-        <a href="/restaurants/add">Add New Restaurant</a>
+<!--common layout inserted from boilerplate file-->
+<% layout('layouts/boilerplate') %> 
+<h1>All Restaurants</h1>
+<div>
+    <a href="/restaurants/add">Add New Restaurant</a>
+</div>
+<% for (let restaurant of restaurants){%>
+    <div class="card mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <img class="img-fluid" alt="" src="<%=restaurant.image%>">
+            </div>
+            <div class="col-mg-8">
+                <div class="card-body">
+                    <h5 class="card-title"><%= restaurant.title %></h5>
+                    <p class="card-text"><%= restaurant.description %></p>   
+                    <a href="/restaurants/<%=restaurant._id%>" class="btn btn-primary">View <%=restaurant.title%></a>                 
+                </div>
+            </div>
+        </div>
     </div>
-    <ul>
-        <% for (let restaurant of restaurants){%>
-        <li><a href="/restaurants/<%= restaurant._id %>"><%= restaurant.title %></a></li>
-    <% }%>
-    </ul>
-</body>
-</html>
+<% }%>
+

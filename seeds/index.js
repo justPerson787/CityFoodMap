@@ -23,8 +23,13 @@ db.once("open", () => {
 const seedDB = async() => {
     await Foodplace.deleteMany({});
     for (let i = 0; i< 12; i++) {
+        const random = Math.floor(Math.random() * 1000);
+        const price = Math.floor(Math.random() * 30) + 10;
         const place = new Foodplace({
-            title: `${places[i]}`
+            title: `${places[i]}`,
+            image: 'https://source.unsplash.com/collection/1006898',
+            description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ut labore ratione quasi eaque architecto praesentium voluptatibus quaerat voluptatem similique veritatis? Non, deserunt a recusandae harum iste voluptatem culpa. Ipsa, sed!',
+            price: price
         })
         await place.save();
     }
