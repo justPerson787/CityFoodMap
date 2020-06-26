@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Foodplace = require('./models/foodplace');
 
@@ -36,45 +38,53 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.get('/restaurants', async (req, res) => {
+app.get('/restaurants', catchAsync(async (req, res) => {
     const restaurants = await Foodplace.find({ });
     res.render('restaurants/index', { restaurants })
-})
+}));
 
 app.get('/restaurants/add', (req, res) => {
     res.render('restaurants/add');
-})
-
-app.post('/restaurants', async (req, res) => {    
-    const restaurant = new Foodplace(req.body.restaurant);
-    await restaurant.save();
-    console.log(restaurant);
-    res.redirect(`/restaurants/${restaurant._id}`)
-    //res.send('POST restaurants response!');
 });
 
-app.get('/restaurants/:id', async (req, res) => {
+app.post('/restaurants', catchAsync(async (req, res, next) => {  
+        const restaurant = new Foodplace(req.body.restaurant);
+        await restaurant.save();
+        res.redirect(`/restaurants/${restaurant._id}`)    
+}));
+
+app.get('/restaurants/:id', catchAsync(async (req, res) => {
     const restaurant = await Foodplace.findById(req.params.id);    
     res.render('restaurants/show', { restaurant });
-})
+}));
 
-app.get('/restaurants/:id/edit', async (req, res) => {
+app.get('/restaurants/:id/edit', catchAsync(async (req, res) => {
     const restaurant = await Foodplace.findById(req.params.id);    
     res.render('restaurants/edit', { restaurant });
-})
+}));
 
-app.put('/restaurants/:id', async (req, res) => {
+app.put('/restaurants/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const restaurant = await Foodplace.findByIdAndUpdate(id, { ...req.body.restaurant });
     res.redirect(`/restaurants/${restaurant._id}`);
-})
+}));
 
-app.delete('/restaurants/:id', async (req, res) => {
+app.delete('/restaurants/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Foodplace.findByIdAndDelete(id);
     res.redirect('/restaurants');
+}));
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404))
 })
+
+app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err;
+    if(!err.message) {err.message = 'O No, Something Went Wrong'}
+    res.status(statusCode).render('error', { err });
+});
 
 app.listen(3000, ()=> {
     console.log('serving on port 3000')
-})
+});
