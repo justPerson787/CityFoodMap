@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
+const Joi = require('joi');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
@@ -47,10 +48,26 @@ app.get('/restaurants/add', (req, res) => {
     res.render('restaurants/add');
 });
 
-app.post('/restaurants', catchAsync(async (req, res, next) => {  
-        const restaurant = new Foodplace(req.body.restaurant);
-        await restaurant.save();
-        res.redirect(`/restaurants/${restaurant._id}`)    
+app.post('/restaurants', catchAsync(async (req, res, next) => { 
+   // if(!req.body.restaurant) throw new ExpressError('Invalid place data', 400);
+    const restaurantSchema = Joi.object({
+        restaurant: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0),
+            description: Joi.string().required(),
+            image: Joi.string().required()
+        }).required()
+    })
+    const { error } = restaurantSchema.validate(req.body);
+
+    if(error){
+        const msg = error.details.map(el=>el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }
+    console.log(result);
+    const restaurant = new Foodplace(req.body.restaurant);
+    await restaurant.save();
+    res.redirect(`/restaurants/${restaurant._id}`)    
 }));
 
 app.get('/restaurants/:id', catchAsync(async (req, res) => {
