@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const Joi = require('joi');
+const { restaurantSchema } = require('./validationSchemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
@@ -35,6 +35,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true })) //to extract POST request body
 app.use(methodOverride('_method')); //method override for editing in form
 
+const validateRestaurant = (req, res, next) => {
+    const { error } = restaurantSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el=>el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+    console.log(result);
+}
+
 app.get('/', (req, res) => {
     res.render('home')
 })
@@ -48,23 +59,9 @@ app.get('/restaurants/add', (req, res) => {
     res.render('restaurants/add');
 });
 
-app.post('/restaurants', catchAsync(async (req, res, next) => { 
+app.post('/restaurants', validateRestaurant, catchAsync(async (req, res, next) => { 
    // if(!req.body.restaurant) throw new ExpressError('Invalid place data', 400);
-    const restaurantSchema = Joi.object({
-        restaurant: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            description: Joi.string().required(),
-            image: Joi.string().required()
-        }).required()
-    })
-    const { error } = restaurantSchema.validate(req.body);
-
-    if(error){
-        const msg = error.details.map(el=>el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }
-    console.log(result);
+    
     const restaurant = new Foodplace(req.body.restaurant);
     await restaurant.save();
     res.redirect(`/restaurants/${restaurant._id}`)    
@@ -80,7 +77,7 @@ app.get('/restaurants/:id/edit', catchAsync(async (req, res) => {
     res.render('restaurants/edit', { restaurant });
 }));
 
-app.put('/restaurants/:id', catchAsync(async (req, res) => {
+app.put('/restaurants/:id', validateRestaurant, catchAsync(async (req, res) => {
     const { id } = req.params;
     const restaurant = await Foodplace.findByIdAndUpdate(id, { ...req.body.restaurant });
     res.redirect(`/restaurants/${restaurant._id}`);
