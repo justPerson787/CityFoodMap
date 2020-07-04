@@ -2,11 +2,12 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const { restaurantSchema } = require('./validationSchemas.js');
+const { restaurantSchema, reviewSchema } = require('./validationSchemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Foodplace = require('./models/foodplace');
+const Review = require('./models/review');
 
 require('dotenv').config(); //to read .env file for mongodb connection
 
@@ -43,7 +44,16 @@ const validateRestaurant = (req, res, next) => {
     } else {
         next();
     }
-    console.log(result);
+}
+
+const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el=>el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
 }
 
 app.get('/', (req, res) => {
@@ -88,6 +98,15 @@ app.delete('/restaurants/:id', catchAsync(async (req, res) => {
     await Foodplace.findByIdAndDelete(id);
     res.redirect('/restaurants');
 }));
+
+app.post('/restaurants/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const restaurant = await Foodplace.findById(req.params.id);
+    const review = new Review(req.body.review);
+    restaurant.reviews.push(review);
+    await review.save();
+    await restaurant.save();
+    res.redirect(`/restaurants/${restaurant._id}`);
+}))
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
