@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const review = require('./review');
 const Schema = mongoose.Schema;
 
 const FoodPlaceSchema = new Schema({
@@ -15,5 +16,16 @@ const FoodPlaceSchema = new Schema({
         }
     ]
 });
+
+//delete stored reviews if the place is deleted
+FoodPlaceSchema.post('findOneAndDelete', async function(doc){
+    if (doc){
+        await review.deleteMany({
+            _id: {
+                $in: doc.reviews
+            }
+        })
+    }
+})
 
 module.exports = mongoose.model('foodplace', FoodPlaceSchema); //model and schema

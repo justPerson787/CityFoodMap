@@ -78,7 +78,7 @@ app.post('/restaurants', validateRestaurant, catchAsync(async (req, res, next) =
 }));
 
 app.get('/restaurants/:id', catchAsync(async (req, res) => {
-    const restaurant = await Foodplace.findById(req.params.id);    
+    const restaurant = await Foodplace.findById(req.params.id).populate('reviews');  
     res.render('restaurants/show', { restaurant });
 }));
 
@@ -101,11 +101,19 @@ app.delete('/restaurants/:id', catchAsync(async (req, res) => {
 
 app.post('/restaurants/:id/reviews', validateReview, catchAsync(async (req, res) => {
     const restaurant = await Foodplace.findById(req.params.id);
-    const review = new Review(req.body.review);
+    const review = new Review(req.body.review);    
     restaurant.reviews.push(review);
     await review.save();
     await restaurant.save();
     res.redirect(`/restaurants/${restaurant._id}`);
+}))
+
+app.delete('/restaurants/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    //pull - recommended solution to remove item from array, mongo
+    await Foodplace.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/restaurants/${id}`);
 }))
 
 app.all('*', (req, res, next) => {
