@@ -16,7 +16,7 @@ const validateReview = (req, res, next) => {
     }
 }
 
-app.post('/', validateReview, catchAsync(async (req, res) => {
+router.post('/', validateReview, catchAsync(async (req, res) => {
     const restaurant = await Foodplace.findById(req.params.id);
     const review = new Review(req.body.review);    
     restaurant.reviews.push(review);
@@ -25,7 +25,7 @@ app.post('/', validateReview, catchAsync(async (req, res) => {
     res.redirect(`/restaurants/${restaurant._id}`);
 }))
 
-app.delete('/:reviewId', catchAsync(async (req, res) => {
+router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     //pull - recommended solution to remove item from array, mongo
     await Foodplace.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });

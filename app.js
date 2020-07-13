@@ -15,7 +15,8 @@ const uri = process.env.ATLAS_URI; //connect mongodb with atlas
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 ///*'mongodb://localhost27017/cityfood-map' could be instead of uri for local db called cityfood-map
 
@@ -34,6 +35,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true })) //to extract POST request body
 app.use(methodOverride('_method')); //method override for editing in form
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/restaurants', restaurants);
 app.use('/restaurants/:id/reviews', reviews);
