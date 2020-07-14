@@ -24,11 +24,11 @@ router.get('/add', (req, res) => {
     res.render('restaurants/add');
 });
 
-router.post('/', validateRestaurant, catchAsync(async (req, res, next) => { 
-    // if(!req.body.restaurant) throw new ExpressError('Invalid place data', 400);
-     
+router.post('/', validateRestaurant, catchAsync(async (req, res, next) => {     
+    // if(!req.body.restaurant) throw new ExpressError('Invalid place data', 400);     
      const restaurant = new Foodplace(req.body.restaurant);
      await restaurant.save();
+     req.flash('success', 'New restaurant added!');
      res.redirect(`/restaurants/${restaurant._id}`)    
 }));
  
