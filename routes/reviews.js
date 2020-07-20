@@ -22,6 +22,7 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
     restaurant.reviews.push(review);
     await review.save();
     await restaurant.save();
+    req.flash('success', 'New review added');
     res.redirect(`/restaurants/${restaurant._id}`);
 }))
 
@@ -30,6 +31,7 @@ router.delete('/:reviewId', catchAsync(async (req, res) => {
     //pull - recommended solution to remove item from array, mongo
     await Foodplace.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success', 'Review deleted');
     res.redirect(`/restaurants/${id}`);
 }));
 

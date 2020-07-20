@@ -33,24 +33,34 @@ router.post('/', validateRestaurant, catchAsync(async (req, res, next) => {
 }));
  
 router.get('/:id', catchAsync(async (req, res) => {
-     const restaurant = await Foodplace.findById(req.params.id).populate('reviews');  
+     const restaurant = await Foodplace.findById(req.params.id).populate('reviews'); 
+     if(!restaurant){
+        req.flash('error', 'Cannot find the place');
+        return res.redirect('/restaurants');
+    } 
      res.render('restaurants/show', { restaurant });
 }));
 
 router.get('/:id/edit', catchAsync(async (req, res) => {
-    const restaurant = await Foodplace.findById(req.params.id);    
+    const restaurant = await Foodplace.findById(req.params.id);  
+    if(!restaurant){
+        req.flash('error', 'Cannot find the place');
+        return res.redirect('/restaurants');
+    }      
     res.render('restaurants/edit', { restaurant });
 }));
 
 router.put('/:id', validateRestaurant, catchAsync(async (req, res) => {
     const { id } = req.params;
     const restaurant = await Foodplace.findByIdAndUpdate(id, { ...req.body.restaurant });
+    req.flash('success', 'Restaurant updated successfully!')
     res.redirect(`/restaurants/${restaurant._id}`);
 }));
 
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Foodplace.findByIdAndDelete(id);
+    req.flash('success', 'Restaurant deleted successfully');
     res.redirect('/restaurants');
 }));
 
