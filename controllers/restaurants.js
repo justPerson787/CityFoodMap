@@ -10,8 +10,9 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createRestaurant = async (req, res, next) => {     
-    // if(!req.body.restaurant) throw new ExpressError('Invalid place data', 400);     
+        
      const restaurant = new Foodplace(req.body.restaurant);
+     restaurant.images = req.files.map(file => ({ url: file.path, filename: file.filename})); 
      restaurant.author = req.user._id;
      await restaurant.save();
      req.flash('success', 'New restaurant added!');

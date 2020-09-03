@@ -3,12 +3,16 @@ const router = express.Router();
 const restaurants = require('../controllers/restaurants');
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, isAuthor, validateRestaurant } = require('../middleware');
+const multer = require('multer');
+const {storage} = require('../cloudinary');
+const upload = multer({ storage });
 
 const Foodplace = require('../models/foodplace');
 
 router.route('/')
     .get( catchAsync(restaurants.findIndex))
-    .post(isLoggedIn, validateRestaurant, catchAsync(restaurants.createRestaurant));
+    .post(isLoggedIn, upload.array('image'), validateRestaurant, catchAsync(restaurants.createRestaurant))
+    
 
 router.get('/add', isLoggedIn, restaurants.renderNewForm);
 

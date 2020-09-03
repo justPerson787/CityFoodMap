@@ -5,7 +5,10 @@
     <!-- Left Column -->
     <div class="col-6">
         <div class="card mb-3">
-            <img src="<%=restaurant.image%>" class="card-img-top" alt="...">
+            <% for(let image of restaurant.images) { %>
+                <img src="<%= image.url%>" class="card-img-top" alt="...">
+            <% } %>
+            
             <div class="card-body">
               <h5 class="card-title"><%=restaurant.title%></h5>
               <p class="card-text"><%=restaurant.description%></p>              

@@ -5,7 +5,12 @@ const Schema = mongoose.Schema;
 const FoodPlaceSchema = new Schema({
     ID: {type: mongoose.SchemaTypes.ObjectId, index: true},
     title: String,
-    image: String,
+    image: [
+        {
+            url: String,
+            filename: String
+        }
+    ],
     price: Number,
     description: String,
     location: String,
