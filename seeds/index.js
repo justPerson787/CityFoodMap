@@ -28,9 +28,14 @@ const seedDB = async() => {
         const place = new Foodplace({
             author: '6011a490e9e9fe892c79d0ab',
             title: `${places[i]}`,
-            image: 'https://source.unsplash.com/collection/1006898',
             description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ut labore ratione quasi eaque architecto praesentium voluptatibus quaerat voluptatem similique veritatis? Non, deserunt a recusandae harum iste voluptatem culpa. Ipsa, sed!',
-            price: price
+            price: price,
+            images: [
+                {
+                    url: 'https://res.cloudinary.com/dnyqwohwz/image/upload/v1612191699/CinciFood/sihbneaupgaxdjiidbij.jpg',
+                    filename: 'CinciFood/sihbneaupgaxdjiidbij'                
+                }
+            ]
         })
         await place.save();
     }

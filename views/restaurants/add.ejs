@@ -8,7 +8,7 @@
                 <input class="form-control" type="text" id="title" name="restaurant[title]" required>
                 <div class="valid-feedback">Great!</div>
             </div>  
-            <input type="file" name="image" id="">          
+                
             <!--<div class="mb-3">
                 <label class="form-label" for="image">Image Url</label>
                 <input class="form-control" type="text" id="image" name="restaurant[image]" required>
@@ -22,10 +22,21 @@
                     <div class="valid-feedback">Great!</div>
                 </div>
             </div> 
+            <!-- Description -->
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <textarea class="form-control" type="text" id="description" name="restaurant[description]" required></textarea>
                 <div class="valid-feedback">Great!</div>
+            </div>
+            <!-- Upload Images -->
+            <div class="mb-3">
+                <div class="form-file custom-file">
+                    <input type="file" class="form-file-input" id="image" name="image" multiple>
+                    <label for="image" class="form-file-label">
+                        <span class="form-file-text custom-file-label"></span>
+                       <!-- <span class="form-file-button">Browse</span> -->
+                    </label>
+                </div>
             </div>
             <div class="mb-3">
                 <button class="btn btn-success">Add Restaurant</button>
