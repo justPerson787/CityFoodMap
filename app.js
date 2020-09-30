@@ -6,9 +6,14 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
-const restaurants = require('./routes/restaurants');
-const reviews = require('./routes/reviews');
+//Add ROUTES
+const restaurantsRoutes = require('./routes/restaurants');
+const reviewsRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
 
 require('dotenv').config(); //to read .env file for mongodb connection
 
@@ -53,14 +58,25 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
-app.use((req, res, next) => {//middleware to have access to flash msg locally
+
+//Authentification with passport library
+app.use(passport.initialize());
+app.use(passport.session()); //must be used after app.use(session())
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use((req, res, next) => {//success, err - middleware to have access to flash msg locally
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
 
-app.use('/restaurants', restaurants);
-app.use('/restaurants/:id/reviews', reviews);
+app.use('/', userRoutes);
+app.use('/restaurants', restaurantsRoutes);
+app.use('/restaurants/:id/reviews', reviewsRoutes);
 
 app.get('/', (req, res) => {
     res.render('home')

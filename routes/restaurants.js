@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const { restaurantSchema } = require('../validationSchemas.js');
+const { isLoggedIn } = require('../middleware');
 const ExpressError = require('../utils/ExpressError');
 const Foodplace = require('../models/foodplace');
 
@@ -20,11 +21,11 @@ router.get('/', catchAsync(async (req, res) => {
     res.render('restaurants/index', { restaurants })
 }));
 
-router.get('/add', (req, res) => {
+router.get('/add', isLoggedIn, (req, res) => {    
     res.render('restaurants/add');
 });
 
-router.post('/', validateRestaurant, catchAsync(async (req, res, next) => {     
+router.post('/', isLoggedIn, validateRestaurant, catchAsync(async (req, res, next) => {     
     // if(!req.body.restaurant) throw new ExpressError('Invalid place data', 400);     
      const restaurant = new Foodplace(req.body.restaurant);
      await restaurant.save();
@@ -41,7 +42,7 @@ router.get('/:id', catchAsync(async (req, res) => {
      res.render('restaurants/show', { restaurant });
 }));
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const restaurant = await Foodplace.findById(req.params.id);  
     if(!restaurant){
         req.flash('error', 'Cannot find the place');
@@ -50,14 +51,14 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
     res.render('restaurants/edit', { restaurant });
 }));
 
-router.put('/:id', validateRestaurant, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateRestaurant, catchAsync(async (req, res) => {
     const { id } = req.params;
     const restaurant = await Foodplace.findByIdAndUpdate(id, { ...req.body.restaurant });
     req.flash('success', 'Restaurant updated successfully!')
     res.redirect(`/restaurants/${restaurant._id}`);
 }));
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Foodplace.findByIdAndDelete(id);
     req.flash('success', 'Restaurant deleted successfully');
