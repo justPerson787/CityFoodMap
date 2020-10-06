@@ -53,7 +53,7 @@ module.exports.updateRestaurant = async (req, res) => {
     await restaurant.save();
     if (req.body.deleteImages) {
         for (let filename of req.body.deleteImages) {
-            cloudinary.uploader.destroy(filename); //remove delete from website image from cloudinary hosting
+            cloudinary.uploader.destroy(filename); //remove image deleted from website from cloudinary hosting
         }
        await restaurant.updateOne({$pull: {images: {filename: {$in: req.body.deleteImages }}}})
     }
