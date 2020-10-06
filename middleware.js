@@ -14,7 +14,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 
 module.exports.validateRestaurant = (req, res, next) => {
     const { error } = restaurantSchema.validate(req.body);
-    console.log('middleware file', req.body);
+    //console.log('middleware file', req.body);
     if(error){
         const msg = error.details.map(el=>el.message).join(',')
         throw new ExpressError(msg, 400)

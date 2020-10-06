@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { places } = require('./seedHelper');
+const { places, location } = require('./seedHelper');
 const Foodplace = require('../models/foodplace');
 
 require('dotenv').config(); //to read .env file for mongodb connection
@@ -28,6 +28,7 @@ const seedDB = async() => {
         const place = new Foodplace({
             author: '6011a490e9e9fe892c79d0ab',
             title: `${places[i]}`,
+            location: `${location[i]}`,
             description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ut labore ratione quasi eaque architecto praesentium voluptatibus quaerat voluptatem similique veritatis? Non, deserunt a recusandae harum iste voluptatem culpa. Ipsa, sed!',
             price: price,
             images: [
