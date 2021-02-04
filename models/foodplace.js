@@ -15,10 +15,21 @@ ImageSchema.virtual('thumbnail').get(function() {
 const FoodPlaceSchema = new Schema({
     ID: {type: mongoose.SchemaTypes.ObjectId, index: true},
     title: String,
-    images: [ImageSchema],
+    images: [ImageSchema],    
+    location: String,
+    geometry: {
+        type: {
+            "type":String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     price: Number,
     description: String,
-    location: String,
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'

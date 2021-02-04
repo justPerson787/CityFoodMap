@@ -17,9 +17,9 @@ module.exports.createRestaurant = async (req, res, next) => {
     const geoData = await geocoder.forwardGeocode({
         query: req.body.restaurant.location,
         limit: 1
-    }).send()  
-    res.send(geoData.body.features[0].geometry.coordinates);
+    }).send()      
     const restaurant = new Foodplace(req.body.restaurant);
+    restaurant.geometry = geoData.body.features[0].geometry;
     restaurant.images = req.files.map(file => ({ url: file.path, filename: file.filename})); 
     restaurant.author = req.user._id;
     await restaurant.save();
