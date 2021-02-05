@@ -1,5 +1,6 @@
 <!--common layout inserted from boilerplate file-->
 <% layout('layouts/boilerplate') %> 
+<div class="" id="cluster-map" style="width: 100%; height: 500px"></div>
 <h1>All Restaurants</h1>
 <div>
     <a href="/restaurants/add">Add New Restaurant</a>
@@ -24,4 +25,11 @@
         </div>
     </div>
 <% }%>
+
+<script>
+    const mapToken = '<%-process.env.MAPBOX_TOKEN%>';//mapToken for clusterMap.js script
+    const restaurants = {features: <%- JSON.stringify(restaurants) %>};
+    console.log(restaurants)
+</script>
+<script src="/js/clusterMap.js"></script>
 

@@ -95,9 +95,7 @@
 
 <!-- token to display mapbox map-->
 <script>
-    const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
-    console.log(mapToken);
-    const restaurant = <%- JSON.stringify(restaurant) %>;
-    console.log(restaurant)
+    const mapToken = '<%-process.env.MAPBOX_TOKEN%>';    
+    const restaurant = <%- JSON.stringify(restaurant) %>    
 </script>
 <script src="/js/showPageMap.js"></script>

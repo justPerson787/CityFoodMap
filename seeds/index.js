@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { places, location } = require('./seedHelper');
 const Foodplace = require('../models/foodplace');
 
-require('dotenv').config(); //to read .env file for mongodb connection
+require('dotenv').config(); //to read .env file for mongoDB connection
 
 const uri = process.env.ATLAS_URI; //connect mongodb with atlas 
 
