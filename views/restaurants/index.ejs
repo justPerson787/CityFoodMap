@@ -1,30 +1,33 @@
 <!--common layout inserted from boilerplate file-->
-<% layout('layouts/boilerplate') %> 
-<div class="" id="cluster-map" style="width: 100%; height: 500px"></div>
-<h1>All Restaurants</h1>
-<div>
-    <a href="/restaurants/add">Add New Restaurant</a>
-</div>
-<% for (let restaurant of restaurants){%>
-    <div class="card mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <%if(restaurant.images.length) {%>
-                <img class="img-fluid" alt="" src="<%=restaurant.images[0].url%>">   <!--display 1st image -->
-                <% }else {%>
-                    <img src="https://res.cloudinary.com/dnyqwohwz/image/upload/v1612470105/CinciFood/photo-1467003909585-2f8a72700288_yzpkfp.jpg" alt="" class="img-fluid"> <!-- put some default img in src-->
-                    <% } %>
-            </div>
-            <div class="col-mg-8">
-                <div class="card-body">
-                    <h5 class="card-title"><%= restaurant.title %></h5>
-                    <p class="card-text"><%= restaurant.description %></p>   
-                    <a href="/restaurants/<%=restaurant._id%>" class="btn btn-primary">View <%=restaurant.title%></a>                 
+<% layout('layouts/boilerplate') %>  
+<div id="cluster-map"></div>
+<div class="container">
+    <h1>All Restaurants</h1>
+
+    <% for (let restaurant of restaurants){%>
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <%if(restaurant.images.length) {%>
+                    <img class="img-fluid" alt="" src="<%=restaurant.images[0].url%>">   <!--display 1st image -->
+                    <% }else {%>
+                        <img src="https://res.cloudinary.com/dnyqwohwz/image/upload/v1612470105/CinciFood/photo-1467003909585-2f8a72700288_yzpkfp.jpg" alt="" class="img-fluid"> <!-- some default img -->
+                        <% } %>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= restaurant.title %></h5>
+                        <p class="card-text"><%= restaurant.description %></p>   
+                        <p class="card-text">
+                            <small class="text-muted"><%= restaurant.location %></small>
+                        </p> 
+                        <a href="/restaurants/<%=restaurant._id%>" class="btn btn-primary">View <%=restaurant.title%></a>                 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-<% }%>
+    <% }%>
+</div>
 
 <script>
     const mapToken = '<%-process.env.MAPBOX_TOKEN%>';//mapToken for clusterMap.js script
