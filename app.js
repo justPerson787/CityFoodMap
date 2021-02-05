@@ -49,11 +49,13 @@ app.use(methodOverride('_method')); //method override for editing in form
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sessionConfig = {
+    name: 'useruser', //default name
     secret: 'thisshouldbeabettersecret!',
     resave: false,
     saveUninitialized: true,
     cookie: {
-        httpOnly: true,
+        httpOnly: true, //makes cookie not accessable through JS (sec)
+        //secure: true, //work only in secured connection - for deploment activate
         expires: Date.now() + 1000*60*60*24*7,
         maxAge: 1000*60*60*24*7 //1 week in millisec
     }
