@@ -23,7 +23,7 @@ module.exports.createRestaurant = async (req, res, next) => {
     restaurant.images = req.files.map(file => ({ url: file.path, filename: file.filename})); 
     restaurant.author = req.user._id;
     await restaurant.save();
-    console.log(restaurant);
+    console.log(req.body);
     req.flash('success', 'New restaurant added!');
     res.redirect(`/restaurants/${restaurant._id}`)    
 }
@@ -53,10 +53,14 @@ module.exports.renderEditForm = async (req, res) => {
 }
 
 module.exports.updateRestaurant = async (req, res) => {
-    const { id } = req.params;    
+    const { id } = req.params;   
+    console.log('controller', req.params, req.body);
     const restaurant = await Foodplace.findByIdAndUpdate(id, { ...req.body.restaurant });
-    const imgs = req.files.map(file => ({ url: file.path, filename: file.filename }));
-    restaurant.images.push(...imgs);
+    console.log('controller', restaurant);
+    if (req.files) {
+        const imgs = req.files.map(file => ({ url: file.path, filename: file.filename }));
+        restaurant.images.push(...imgs);
+    }
     await restaurant.save();
     if (req.body.deleteImages) {
         for (let filename of req.body.deleteImages) {
@@ -65,7 +69,7 @@ module.exports.updateRestaurant = async (req, res) => {
        await restaurant.updateOne({$pull: {images: {filename: {$in: req.body.deleteImages }}}})
     }
     req.flash('success', 'Restaurant updated successfully!')
-    res.redirect(`/restaurants/${rest._id}`);
+    res.redirect(`/restaurants/${restaurant._id}`);
 }
 
 module.exports.deleteRestaurant = async (req, res) => {

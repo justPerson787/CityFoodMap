@@ -1,53 +1,54 @@
 <% layout('layouts/boilerplate') %> 
 <link rel="stylesheet" href="/css/star.css">
 
-<div class="row">
+<div><div class="row">
     <!-- Left Column -->
-    <div class="col-6">
-        <!-- Map display -->
-        <div id="map"></div>
-        <div id="restaurantCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="col-6">        
+        <div id="restaurantCarousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 <% restaurant.images.forEach((img, i) => { %>
                 <div class="carousel-item <%= i === 0 ? 'active' : ''%>">
                     <img src="<%= img.url%>" class="d-block w-100" alt="">
                 </div>
                 <% }) %>
-
             </div>
         <% if(restaurant.images.length > 1) {%>
-        <a class="carousel-control-prev" href="#restaurantCarousel" role="button" data-bs-slide="prev">
+        <a class="carousel-control-prev" href="#restaurantCarousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </a>
-        <a class="carousel-control-next" href="#restaurantCarousel" role="button" data-bs-slide="next">
+        <a class="carousel-control-next" href="#restaurantCarousel" role="button" data-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
+            <span class="sr-only">Next</span>
         </a>
         <% } %>
         </div>
-    <div class="card mb-3">          
-        <div class="card-body">
-            <h5 class="card-title"><%=restaurant.title%></h5>
-            <p class="card-text"><%=restaurant.description%></p> 
-            <p class="card-text"><%=restaurant.location%></p>             
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item text-muted">Average price $<%=restaurant.price%></li>
-            <li class="list-group-item">Submitted by <%= restaurant.author.username %></li>                
-        </ul>
-        <% if( currentUser && restaurant.author.equals(currentUser._id)) {%>
+        <div class="card mb-3">          
             <div class="card-body">
-                <a href="/restaurants/<%=restaurant._id%>/edit" class="card-link btn btn-info">Edit</a>
-                <form class="d-inline" action="/restaurants/<%=restaurant._id%>?_method=DELETE" method="post">
-                    <button class="btn btn-danger">Delete</button>
-                </form>
+                <h5 class="card-title"><%=restaurant.title%></h5>
+                <p class="card-text"><%=restaurant.description%></p> 
+            <!-- <p class="card-text"><%=restaurant.location%></p>         -->    
             </div>
-        <% } %>
-    </div>     
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Average price $<%=restaurant.price%></li>             
+                <li class="list-group-item"><%= restaurant.location%></li>    
+                <li class="list-group-item text-muted">Submitted by <%= restaurant.author.username %></li>           
+            </ul>
+            <% if( currentUser && restaurant.author.equals(currentUser._id)) {%>
+                <div class="card-body">
+                    <a href="/restaurants/<%=restaurant._id%>/edit" class="card-link btn btn-info">Edit</a>
+                    <form class="d-inline" action="/restaurants/<%=restaurant._id%>?_method=DELETE" method="post">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>     
     </div>
     <!-- Right column -->
     <div class="col-6">
+        <!-- Map display -->
+        <div id="map"></div>
+        
         <% if(currentUser){ %>
         <h2>Leave a Review</h2>
         <form action="/restaurants/<%=restaurant._id%>/reviews" method="post" class="mb-3 validated-form">
@@ -88,10 +89,7 @@
         </div>
         <% } %> 
     </div>
-</div>
-<footer>
-    <a href="/restaurants">All Restaurants</a>
-</footer>
+</div></div>
 
 <!-- token to display mapbox map-->
 <script>
