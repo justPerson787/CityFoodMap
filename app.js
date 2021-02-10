@@ -22,9 +22,18 @@ const restaurantsRoutes = require('./routes/restaurants');
 const reviewsRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
 
+const MongoDBStore = require('connect-mongo')(session);
+
 require('dotenv').config(); //to read .env file for mongodb connection
 
+
+//Local Mongo DB
+//'mongodb://localhost27017/cityfood' for local db called cityfood
+//const dbUrl = 'mongodb://localhost27017/cityfood';
+
+//MongoDB Atlas
 const uri = process.env.ATLAS_URI; //connect mongodb with atlas 
+//const uri = process.env.ATLAS_URI || 'mongodb://localhost27017/cityfood';
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -32,7 +41,7 @@ mongoose.connect(uri, {
     useUnifiedTopology: true,
     useFindAndModify: false
 });
-///*'mongodb://localhost27017/cityfood-map' could be instead of uri for local db called cityfood-map
+///*'mongodb://localhost27017/cityfood-map' for local db called cityfood-map
 
 const db = mongoose.connection;
 //check for successful connection
@@ -52,9 +61,23 @@ app.use(methodOverride('_method')); //method override for editing in form
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const secret = process.end.SECRET || 'thisshouldbeasecret!';
+//Configure Mongo for Session Store
+const store = new MongoDBStore({
+    url: uri, //dbUrl for local DB or atlas
+    secret,
+    touchAfter: 24 * 60 * 60 //time in sec
+});
+
+store.on("error", function(e){
+    console.log("Session store error!", e)
+})
+
+// Configure Session
 const sessionConfig = {
+    store: store,
     name: 'useruser', //default name
-    secret: 'thisshouldbeabettersecret!',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -86,6 +109,7 @@ const styleSrcUrls = [
     "https://api.tiles.mapbox.com",
     "https://fonts.googleapis.com",
     "https://use.fontawesome.com",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
 ];
 const connectSrcUrls = [
     "https://api.mapbox.com",
