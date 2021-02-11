@@ -61,7 +61,7 @@ app.use(methodOverride('_method')); //method override for editing in form
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
-const secret = process.end.SECRET || 'thisshouldbeasecret!';
+const secret = process.env.SECRET || 'thisshouldbeasecret!';
 //Configure Mongo for Session Store
 const store = new MongoDBStore({
     url: uri, //dbUrl for local DB or atlas
